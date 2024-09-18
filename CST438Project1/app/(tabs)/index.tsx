@@ -1,19 +1,19 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Image, StyleSheet, Button, View, TextInput, Text } from 'react-native';
 import { HelloWave } from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
-//This will be the login page with the buttons create account or login
-//The page will go to the landing page which will show a random word.
+
 export default function HomeScreen() {
   const [randomNumber, setRandomNumber] = useState(Math.floor(Math.random() * 100) + 1);
   const [showSignIn, setShowSignIn] = useState(false);
   const [signedIn, setSignedIn] = useState(false);
   const [username, setUsername] = useState('');
 
+  
   const handleRandomize = () => {
-    setRandomNumber(Math.floor(Math.random() * 100) + 1);
+    setRandomNumber(Math.floor(Math.random() * 10000) + 1);
   };
 
   const AddToPractice = () => {
