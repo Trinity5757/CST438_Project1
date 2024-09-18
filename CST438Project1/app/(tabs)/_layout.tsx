@@ -14,6 +14,18 @@ export default function TabLayout() {
         tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
         headerShown: false,
       }}>
+      {/* Practice button to the left of Home */}
+      <Tabs.Screen
+        name="practice"
+        options={{
+          title: 'Practice',
+          tabBarIcon: ({ color, focused }) => (
+            <TabBarIcon name={focused ? 'pencil' : 'pencil-outline'} color={color} />
+          ),
+        }}
+      />
+
+      {/* Home button */}
       <Tabs.Screen
         name="index"
         options={{
@@ -23,15 +35,18 @@ export default function TabLayout() {
           ),
         }}
       />
+
+      {/* Favorite button to the right of Home */}
       <Tabs.Screen
-        name="explore"
+        name="favorite"
         options={{
-          title: 'Explore',
+          title: 'Favorite',
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'code-slash' : 'code-slash-outline'} color={color} />
+            <TabBarIcon name={focused ? 'heart' : 'heart-outline'} color={color} />
           ),
         }}
       />
     </Tabs>
   );
 }
+
