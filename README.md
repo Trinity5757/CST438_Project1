@@ -13,10 +13,10 @@
 <h3>Contributors</h3>
 
 <ul>
-  <li>Trinity Stallworth</li>
-  <li>Kobi Murakami</li>
-  <li>Colton Korhummel</li>
-  <li>Salvatore Eze</li>
+  <li>Trinity Stallworth: https://github.com/Trinity5757</li>
+  <li>Kobi Murakami: https://github.com/KobiMurakami</li>
+  <li>Colton Korhummel: https://github.com/ColtonKor</li>
+  <li>Salvatore Eze: https://github.com/ezesalvatore</li>
 </ul>
 
 <h3>Built With</h3>
