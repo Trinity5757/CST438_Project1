@@ -9,6 +9,11 @@ type WordApiRef = {
   fetchNewWord: () => void;
 };
 
+export type ToDoItem = {
+  id: number;
+  value: string;
+};
+
 export default function HomeScreen() {
   const [showSignIn, setShowSignIn] = useState(false);
   const [signedIn, setSignedIn] = useState(false);
