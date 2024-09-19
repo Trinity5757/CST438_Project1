@@ -9,9 +9,9 @@ type WordApiRef = {
   fetchNewWord: () => void;
 };
 
-export type ToDoItem = {
-  id: number;
-  value: string;
+export type User = {
+  username: string;
+  password: string;
 };
 
 export default function HomeScreen() {
