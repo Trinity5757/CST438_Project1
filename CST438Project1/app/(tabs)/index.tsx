@@ -1,11 +1,51 @@
-import { Image, StyleSheet, Platform } from 'react-native';
-
-import { HelloWave } from '@/components/HelloWave';
+import React, { useState, useRef } from 'react';
+import { Image, StyleSheet, Button, View, TextInput } from 'react-native';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
+import WordApi from '../wordApi.js';
+
+type WordApiRef = {
+  fetchNewWord: () => void;
+};
 
 export default function HomeScreen() {
+  const [showSignIn, setShowSignIn] = useState(false);
+  const [signedIn, setSignedIn] = useState(false);
+  const [username, setUsername] = useState('');
+  
+  const wordApiRef = useRef<WordApiRef>(null);
+
+  const toggleSignIn = () => {
+    if (signedIn) {
+      setSignedIn(false);
+      setUsername('');
+    } else {
+      setShowSignIn(!showSignIn);
+    }
+  };
+
+  const handleSignIn = () => {
+    setSignedIn(true);
+    setShowSignIn(false);
+  };
+
+  const AddToPractice = () => {
+    //Add to Database
+    handleNewWord();
+  }
+
+  const AddToFavorite = () => {
+    //Add to Database
+    handleNewWord();
+  }
+
+  const handleNewWord = () => {
+    if (wordApiRef.current) {
+      wordApiRef.current.fetchNewWord();
+    }
+  };
+
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
@@ -17,22 +57,18 @@ export default function HomeScreen() {
       }
     >
       <View style={styles.headerContent}>
-        {/* Change button text based on signed-in state */}
         <Button title={signedIn ? "Sign Out" : "Sign In"} onPress={toggleSignIn} />
       </View>
       
-      {/* Conditionally render the sign-in form */}
       {showSignIn && !signedIn && (
         <View style={styles.signInContainer}>
           <ThemedText type="subtitle">Sign In</ThemedText>
-          
-          {/* Username input */}
           <TextInput
             style={styles.input}
             placeholder="Username"
             placeholderTextColor="#888"
             value={username}
-            onChangeText={setUsername} // Store the input username
+            onChangeText={setUsername}
           />
           <TextInput
             style={styles.input}
@@ -40,28 +76,23 @@ export default function HomeScreen() {
             secureTextEntry
             placeholderTextColor="#888"
           />
-          {/* Submit button */}
           <Button title="Submit" onPress={handleSignIn} />
         </View>
       )}
 
       <ThemedView style={styles.titleContainer}>
-        {/* Wrap randomNumber inside a <Text> component */}
+        {/* Display the random word and definition from WordApi */}
         <ThemedText type="title">
-          Word of the Day! {"\n"} <Text>{randomNumber}</Text>
+          Word of the Day! {"\n"} 
+          <WordApi ref={wordApiRef} />
         </ThemedText>
       </ThemedView>
 
       <ThemedView style={styles.buttonContainer}>
-        {/* Use Button title properly */}
         <Button title="Add to Practice" onPress={AddToPractice} />
         <Button title="Add to Favorite" onPress={AddToFavorite} />
       </ThemedView>
-
-      <View style={styles.randomizeButton}>
-        {/* Use Button title properly */}
-        <Button title="Randomize" onPress={handleRandomize} />
-      </View>
+      <Button title="Randomize" onPress={handleNewWord} />
     </ParallaxScrollView>
   );
 }
@@ -78,10 +109,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     gap: 8,
     marginBottom: 16,
-  },
-  randomizeButton: {
-    marginTop: 16,
-    alignItems: 'center',
   },
   reactLogo: {
     height: 178,
@@ -109,4 +136,3 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
 });
-
