@@ -3,7 +3,7 @@ import { Image, StyleSheet, Button, View, TextInput } from 'react-native';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
-import WordApi from '../wordApi.js';
+import WordApi from '../wordsApi.js';
 
 type WordApiRef = {
   fetchNewWord: () => void;
