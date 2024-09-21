@@ -6,7 +6,20 @@ enablePromise(true);
 
 //starts the database
 export const getDBConnection = async () => {
-  return openDatabase({ name: 'userData.db', location: 'default' });
+  console.log("Creating the database!!!!!!!!");
+  return new Promise((resolve, reject) => {
+    const db = openDatabase(
+      { name: 'userData.db', location: 'default' },
+      (db) => {
+        console.log("Database opened successfully");
+        resolve(db);
+      },
+      (error) => {
+        console.error("Failed to open database:", error);
+        reject(error);
+      }
+    );
+  });
 };
 
 
@@ -17,7 +30,7 @@ export const createUserTable = async (db: SQLiteDatabase) => {
     );`;
   await db.executeSql(query);
 
-  await createUser(db, User['test', 'test']);
+  await createUser(db, [{ username: 'test', password: 'test' }]);
 };
 
 //Word table creation method

@@ -11,8 +11,9 @@ import {SQLiteDatabase} from 'react-native-sqlite-storage';
 useEffect(() => {
     const setupDatabase = async () => {
         try {
+            console.log("Attempting to initialize the database!!!!!!!");
             const db = await getDBConnection();
-            await createTable(db);
+            await createUserTable(db);
         } catch (error) {
             console.error("Can't initialize database", error);
         }
@@ -48,10 +49,13 @@ export default function HomeScreen() {
     if (signedIn) {
       setSignedIn(false);
       setUsername('');
-    } else {
+    }
+    else {
       try {
+        console.log("About to open database!!!!!!!!!!!!!!!!!!!!");
         const db = await getDBConnection();
-        const users = await getuser(db);
+        console.log("Opened the database!!!!!!!!!!!!!!!!!!!!");
+        const users = await getUser(db);
         if(users.length > 0) {
         setUsername(users[0].username);
         setSignedIn(true);
