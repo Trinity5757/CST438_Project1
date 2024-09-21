@@ -1,20 +1,20 @@
 import { Tabs } from 'expo-router';
-import React from 'react';
-
 import { TabBarIcon } from '@/components/navigation/TabBarIcon';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
+import React from 'react';
+import { PracticeWordsProvider } from '../PracticeWordsContext';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
 
   return (
+    <PracticeWordsProvider>
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
         headerShown: false,
       }}>
-      {/* Practice button to the left of Home */}
       <Tabs.Screen
         name="practice"
         options={{
@@ -24,8 +24,6 @@ export default function TabLayout() {
           ),
         }}
       />
-
-      {/* Home button */}
       <Tabs.Screen
         name="index"
         options={{
@@ -35,8 +33,6 @@ export default function TabLayout() {
           ),
         }}
       />
-
-      {/* Favorite button to the right of Home */}
       <Tabs.Screen
         name="favorite"
         options={{
@@ -47,6 +43,6 @@ export default function TabLayout() {
         }}
       />
     </Tabs>
+    </PracticeWordsProvider>
   );
 }
-
