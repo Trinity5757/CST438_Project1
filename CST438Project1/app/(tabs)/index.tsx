@@ -4,7 +4,7 @@ import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import WordApi from '../wordsApi.js';
-import {getDBConnection, createUserTable, createWordTable, getUser, getWord, createUser, createWord} from '../../database/db-service.ts';
+import {getDBConnection, createUserTable, createWordTable, getUser, getWord, createUser, createWord} from '../database/db-service.ts';
 import {SQLiteDatabase} from 'react-native-sqlite-storage';
 
 

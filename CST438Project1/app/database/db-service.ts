@@ -1,6 +1,6 @@
 import { enablePromise, openDatabase, SQLiteDatabase } from 'react-native-sqlite-storage';
-import { User } from '../(tabs)';
-import { Word } from '../(tabs)';
+import { User } from '../(tabs)/index.tsx';
+import { Word } from '../(tabs)/index.tsx';
 
 enablePromise(true);
 
