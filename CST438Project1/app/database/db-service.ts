@@ -90,13 +90,13 @@ export const createWord = async (db: SQLiteDatabase, words: Word[]) => {
 
 
 //Delete method for sign in
-export const deleteUser = async (db: SQLiteDatabase, id: number) => {
+export const deleteUser = async (db: SQLiteDatabase, username: string) => {
   const deleteQuery = `DELETE from ${'users'} where username = ${username}`;
-  await db.executeSql(deleteQuery);
+  await db.executeSql(deleteQuery, [username]);
 };
 
 //Delete method for words list
-export const deleteWord = async (db: SQLiteDatabase, id: number) => {
+export const deleteWord = async (db: SQLiteDatabase, word: string) => {
   const deleteQuery = `DELETE FROM words WHERE word = word`;
-  await db.executeSql(deleteQuery);
+  await db.executeSql(deleteQuery, [word]);
 };

@@ -4,26 +4,7 @@ import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import WordApi from '../wordsApi.js';
-import {getDBConnection, createUserTable, createWordTable, getUser, getWord, createUser, createWord} from '../database/db-service.ts';
-import {SQLiteDatabase} from 'react-native-sqlite-storage';
-
-
-useEffect(() => {
-    const setupDatabase = async () => {
-        try {
-            const db = await getDBConnection();
-            await createTable(db);
-        } catch (error) {
-            console.error("Can't initialize database", error);
-        }
-    };
-
-    setupDatabase();
-}, []);
-
-type WordApiRef = {
-  fetchNewWord: () => void;
-};
+import { getDBConnection, createUserTable, createWordTable, getUser, getWord, createUser, createWord } from '../database/db-service.ts';
 
 export type User = {
   username: string;
@@ -37,12 +18,30 @@ export type Word = {
   list: string;
 };
 
+type WordApiRef = {
+  fetchNewWord: () => void;
+};
+
 export default function HomeScreen() {
   const [showSignIn, setShowSignIn] = useState(false);
   const [signedIn, setSignedIn] = useState(false);
   const [username, setUsername] = useState('');
 
   const wordApiRef = useRef<WordApiRef>(null);
+
+  useEffect(() => {
+    const setupDatabase = async () => {
+        try {
+            const db = await getDBConnection();
+            await createUserTable(db);
+            await createWordTable(db);
+        } catch (error) {
+            console.error("Can't initialize database", error);
+        }
+    };
+  
+    setupDatabase();
+  }, []);
 
   const toggleSignIn = async () => {
     if (signedIn) {
@@ -51,7 +50,7 @@ export default function HomeScreen() {
     } else {
       try {
         const db = await getDBConnection();
-        const users = await getuser(db);
+        const users = await getUser(db);
         if(users.length > 0) {
         setUsername(users[0].username);
         setSignedIn(true);
@@ -144,6 +143,7 @@ export default function HomeScreen() {
     </ParallaxScrollView>
   );
 }
+
 
 const styles = StyleSheet.create({
   titleContainer: {
