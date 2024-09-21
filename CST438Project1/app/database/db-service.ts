@@ -1,102 +1,90 @@
-import { enablePromise, openDatabase, SQLiteDatabase } from 'react-native-sqlite-storage';
-import { User } from '../(tabs)/index.tsx';
-import { Word } from '../(tabs)/index.tsx';
+import * as SQLite from 'expo-sqlite';
+import { SQLiteDatabase } from 'expo-sqlite';
 
-enablePromise(true);
-
-//starts the database
-export const getDBConnection = async () => {
-  return openDatabase({ name: 'userData.db', location: 'default' });
+export type User = {
+  username: string;
+  password: string;
 };
 
-
-//User table creation method
-export const createUserTable = async (db: SQLiteDatabase) => {
-  const query = `CREATE TABLE IF NOT EXISTS 'users' (
-        username TEXT PRIMARY KEY NOT NULL, password TEXT NOT NULL
-    );`;
-  await db.executeSql(query);
-
-  await createUser(db, User['test', 'test']);
+export type Word = {
+  word: string;
+  definition: string;
+  username: string;
+  list: string;
 };
 
-//Word table creation method
-export const createWordTable = async (db: SQLiteDatabase) => {
-  const query = `CREATE TABLE IF NOT EXISTS 'words' (
-        word TEXT NOT NULL, definition TEXT NOT NULL, username TEXT NOT NULL, list TEXT NOT NULL
-    );`;
-  await db.executeSql(query);
+export const openDatabase = async (databaseName: string): Promise<SQLiteDatabase> => {
+  return await SQLite.openDatabaseAsync(databaseName,{});
 };
 
+export const deleteDatabase = async (databaseName: string): Promise<void> => {
+  await SQLite.deleteDatabaseAsync(databaseName);
+};
 
-//
-//CRUD methods for each table
-//
+export const serializeDatabase = async (db: SQLiteDatabase): Promise<Uint8Array> => {
+  return await db.serializeAsync();
+};
 
+export const deserializeDatabase = async (serializedData: Uint8Array): Promise<SQLiteDatabase> => {
+  return await SQLite.deserializeDatabaseAsync(serializedData);
+};
 
-//Read method for sign in
+export const addDatabaseChangeListener = (listener: (event: SQLite.DatabaseChangeEvent) => void) => {
+  return SQLite.addDatabaseChangeListener(listener);
+};
+
+export const createUserTable = async (db: SQLiteDatabase): Promise<void> => {
+  const query = `CREATE TABLE IF NOT EXISTS users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    username TEXT NOT NULL UNIQUE,
+    password TEXT NOT NULL
+  )`;
+  await db.execAsync(query);
+};
+
+export const createWordTable = async (db: SQLiteDatabase): Promise<void> => {
+  const query = `CREATE TABLE IF NOT EXISTS words (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    word TEXT NOT NULL,
+    definition TEXT NOT NULL,
+    username TEXT NOT NULL,
+    list TEXT NOT NULL,
+    FOREIGN KEY (username) REFERENCES users (username)
+  )`;
+  await db.execAsync(query);
+};
+
+export const createUser = async (db: SQLiteDatabase, users: User[]): Promise<void> => {
+  const insertQuery = `INSERT OR REPLACE INTO users (username, password) values (?, ?)`;
+  for (const user of users) {
+    await db.runAsync(insertQuery, [user.username, user.password]);
+  }
+};
+
 export const getUser = async (db: SQLiteDatabase): Promise<User[]> => {
-  try {
-    const users: User[] = [];
-    const results = await db.executeSql(`SELECT username FROM users`);
-    results.forEach(result => {
-      for (let index = 0; index < result.rows.length; index++) {
-        users.push(result.rows.item(index))
-      }
-    });
-    return users;
-  } catch (error) {
-    console.error(error);
-    throw Error('Failed to get user !!!');
+  const result = await db.getAllAsync<User>('SELECT * FROM users');
+  return result;
+};
+
+export const createWord = async (db: SQLiteDatabase, words: Word[]): Promise<void> => {
+  const insertQuery = `INSERT OR REPLACE INTO words (word, definition, username, list) values (?, ?, ?, ?)`;
+  for (const word of words) {
+    await db.runAsync(insertQuery, [word.word, word.definition, word.username, word.list]);
   }
 };
 
-//read method for word table
 export const getWord = async (db: SQLiteDatabase): Promise<Word[]> => {
-  try {
-    const words: Word[] = [];
-    const results = await db.executeSql(`SELECT word, definition, username, list FROM words`);
-    results.forEach(result => {
-      for (let index = 0; index < result.rows.length; index++) {
-        words.push(result.rows.item(index))
-      }
-    });
-    return words;
-  } catch (error) {
-    console.error(error);
-    throw Error('Failed to get word !!!');
-  }
+  const result = await db.getAllAsync<Word>('SELECT * FROM words');
+  return result;
 };
 
+// Example of using the change listener
+export const setupDatabaseChangeListener = (db: SQLiteDatabase) => {
+  const subscription = addDatabaseChangeListener((event) => {
+    console.log('Database changed:', event);
+    // You can perform actions based on the change event here
+  });
 
-//Create method for sign in
-export const createUser = async (db: SQLiteDatabase, users: User[]) => {
-  const insertQuery =
-    `INSERT OR REPLACE INTO ${'users'}(username, password) values` +
-    users.map(User => `('${User.username}', '${User.password}')`).join(',');
-
-  return db.executeSql(insertQuery);
-};
-
-
-//create method for words table
-export const createWord = async (db: SQLiteDatabase, words: Word[]) => {
-  const insertQuery =
-    `INSERT OR REPLACE INTO ${'words'}(word, definition, username, list) values` +
-    words.map(Word => `('${Word.word}', '${Word.definition}', '${Word.username}', '${Word.list}')`).join(',');
-
-  return db.executeSql(insertQuery);
-};
-
-
-//Delete method for sign in
-export const deleteUser = async (db: SQLiteDatabase, username: string) => {
-  const deleteQuery = `DELETE from ${'users'} where username = ${username}`;
-  await db.executeSql(deleteQuery, [username]);
-};
-
-//Delete method for words list
-export const deleteWord = async (db: SQLiteDatabase, word: string) => {
-  const deleteQuery = `DELETE FROM words WHERE word = word`;
-  await db.executeSql(deleteQuery, [word]);
+  // Remember to remove the listener when it's no longer needed
+  // subscription.remove();
 };

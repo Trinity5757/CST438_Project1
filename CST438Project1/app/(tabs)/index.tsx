@@ -1,99 +1,155 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { Image, StyleSheet, Button, View, TextInput } from 'react-native';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
-import WordApi from '../wordsApi.js';
-import { getDBConnection, createUserTable, createWordTable, getUser, getWord, createUser, createWord } from '../database/db-service.ts';
-
-export type User = {
-  username: string;
-  password: string;
-};
-
-export type Word = {
-  word: string;
-  definition: string;
-  username: string;
-  list: string;
-};
-
-type WordApiRef = {
-  fetchNewWord: () => void;
-};
+import WordApi, {WordApiRef} from '../wordsApi';
+import { openDatabase, createUserTable, createWordTable, getUser, createUser, createWord, User, Word, setupDatabaseChangeListener } from '../database/db-service';
+import { openDatabaseAsync, openDatabaseSync } from 'expo-sqlite';
+import { PracticeWordsProvider, usePracticeWords } from '../PracticeWordsContext';
 
 export default function HomeScreen() {
-  const [showSignIn, setShowSignIn] = useState(false);
+  const { setPracticeWords } = usePracticeWords();
+
   const [signedIn, setSignedIn] = useState(false);
+  const [showLogin, setShowLogin] = useState(false);
   const [username, setUsername] = useState('');
+  const [currentWord, setCurrentWord] = useState<{ word: string; definition: string } | null>(null);
 
   const wordApiRef = useRef<WordApiRef>(null);
 
+  const setupDatabase = async () => {
+    try {
+      const db = await openDatabase('words.db');
+      await createUserTable(db);
+      await createWordTable(db);
+    } catch (error) {
+    }
+  };
+
   useEffect(() => {
-    const setupDatabase = async () => {
-        try {
-            const db = await getDBConnection();
-            await createUserTable(db);
-            await createWordTable(db);
-        } catch (error) {
-            console.error("Can't initialize database", error);
-        }
-    };
-  
     setupDatabase();
   }, []);
 
-  const toggleSignIn = async () => {
+  useEffect(() => {
+    if (signedIn) {
+      console.log("User is signed in, calling handleNewWord");
+      handleNewWord();
+    }
+  }, [signedIn]);
+
+  const handleNewWord = useCallback(async () => {
+    console.log("handleNewWord called in HomeScreen");
+    if (wordApiRef.current) {
+      try {
+        const newWordString = await wordApiRef.current.fetchNewWord();
+        
+        const currentWordObj = wordApiRef.current.getCurrentWord();
+        
+        if (currentWordObj) {
+          setCurrentWord(currentWordObj);
+          console.log("Current word state updated in HomeScreen:", currentWordObj);
+        } else {
+        }
+      } catch (error) {
+        console.error("Error in handleNewWord:", error);
+      }
+    } else {
+      console.error("wordApiRef is not available in HomeScreen");
+    }
+  }, []);
+
+  const handlePracticeWords = useCallback(async () => {
+    console.log("handlePracticeWords called. SignedIn:", signedIn, "CurrentWord:", currentWord);
+
+    const updatedCurrentWord = wordApiRef.current?.getCurrentWord();
+    if (!updatedCurrentWord) {
+      console.error("Still no current word after fetch attempt");
+      return;
+    }
+
+    try {
+      const db = await openDatabase('words.db');
+      const newWord: Word = {
+        word: updatedCurrentWord.word,
+        definition: updatedCurrentWord.definition,
+        username: username,
+        list: 'practice'
+      };
+      await createWord(db, [newWord]);
+      console.log("Word added to practice:", newWord);
+
+      // Fetch and log all practice words for the current user
+      const practiceWords = await db.getAllAsync<Word>('SELECT * FROM words WHERE username = ? AND list = ?', [username, 'practice']);
+      console.log("Practice words for user", username, ":");
+      practiceWords.forEach((word, index) => {
+        console.log(`${index + 1}. ${word.word}: ${word.definition}`);
+      });
+
+      // Update the context with the new practice words
+      setPracticeWords(practiceWords);
+
+      handleNewWord();
+    } catch (error) {
+      console.error("Can't add word to practice", error);
+    }
+  }, [signedIn, currentWord, username, handleNewWord, setPracticeWords]);
+
+  
+  const handleSignIn = async () => {
+    try {
+      console.log("Starting handleSignIn function");
+      const db = await openDatabase('words.db');
+      console.log("Database opened successfully");
+
+      const newUser: User = {username, password: 'your_password_here'};
+      console.log("New user object created:", newUser);
+
+      await createUser(db, [newUser]);
+      console.log("User created successfully");
+
+      setSignedIn(true);
+      setShowLogin(false);
+      console.log("User signed in, signedIn state set to true");
+
+      const users = await getUser(db);
+      console.log("Users in database:", users);
+
+      console.log("handleSignIn function completed successfully");
+    } catch (error) {
+      console.error("Error in handleSignIn function:", error);
+    }
+  };
+
+  const toggleSignIn = () => {
     if (signedIn) {
       setSignedIn(false);
       setUsername('');
+      setShowLogin(false);
     } else {
-      try {
-        const db = await getDBConnection();
-        const users = await getUser(db);
-        if(users.length > 0) {
-        setUsername(users[0].username);
-        setSignedIn(true);
-        } else {
-            setShowSignIn(true);
-        }
-      } catch (error) {
-        console.error("Can't sign in", error);
-      }
+      setShowLogin(true);
     }
   };
-
-  const handleSignIn = async () => {
+  
+  const handleFavoriteWords = async () => {
+    if (!currentWord || !signedIn) return;
     try {
-        const db = await getDBConnection();
-        const newUser = {username, password: 'your_password_here'};
-        await createUser(db,[newUser]);
-        setSignedIn(true);
-        setShowSignIn(false);
+      const db = await openDatabaseSync('words.db');
+      const newWord: Word = {
+        word: currentWord.word,
+        definition: currentWord.definition,
+        username: username,
+        list: 'favorite'
+      };
+      await createWord(db, [newWord]);
+      handleNewWord();
     } catch (error) {
-        console.error("Can't sign in", error);
+      console.log("Can't add word to favorites", error);
     }
   };
-
-  const AddToPractice = () => {
-    //Add to Database
-    handleNewWord();
-  }
-
-  const AddToFavorite = () => {
-    //Add to Database
-    handleNewWord();
-  }
-
-  const handleNewWord = () => {
-    if (wordApiRef.current) {
-      wordApiRef.current.fetchNewWord();
-    }
-  };
-
-
 
   return (
+    <PracticeWordsProvider>
     <ParallaxScrollView
       headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
       headerImage={
@@ -104,12 +160,12 @@ export default function HomeScreen() {
       }
     >
       <View style={styles.headerContent}>
-        <Button title={signedIn ? "Sign Out" : "Sign In"} onPress={toggleSignIn} />
+        <Button title={signedIn ? "Sign Out" : "Login"} onPress={toggleSignIn} />
       </View>
 
-      {showSignIn && !signedIn && (
+      {showLogin && !signedIn && (
         <View style={styles.signInContainer}>
-          <ThemedText type="subtitle">Sign In</ThemedText>
+          <ThemedText type="subtitle">Login</ThemedText>
           <TextInput
             style={styles.input}
             placeholder="Username"
@@ -117,33 +173,38 @@ export default function HomeScreen() {
             value={username}
             onChangeText={setUsername}
           />
-          <TextInput
-            style={styles.input}
-            placeholder="Password"
-            secureTextEntry
-            placeholderTextColor="#888"
-          />
           <Button title="Submit" onPress={handleSignIn} />
         </View>
       )}
 
       <ThemedView style={styles.titleContainer}>
-        {/* Display the random word and definition from WordApi */}
         <ThemedText type="title">
           Word of the Day! {"\n"}
-          <WordApi ref={wordApiRef} />
+          <WordApi 
+        ref={wordApiRef}
+        onWordChange={(word: string, definition: string) => {
+          setCurrentWord({ word, definition });
+          console.log("Word changed:", { word, definition });
+        }}
+      />
         </ThemedText>
       </ThemedView>
 
       <ThemedView style={styles.buttonContainer}>
-        <Button title="Add to Practice" onPress={AddToPractice} />
-        <Button title="Add to Favorite" onPress={AddToFavorite} />
+        <Button 
+          title="Add to Practice" 
+          onPress={handlePracticeWords} 
+        />
+        <Button 
+          title="Add to Favorite" 
+          // onPress={handleFavoriteWords} 
+        />
       </ThemedView>
       <Button title="Randomize" onPress={handleNewWord} />
     </ParallaxScrollView>
+    </PracticeWordsProvider>
   );
-}
-
+};
 
 const styles = StyleSheet.create({
   titleContainer: {
