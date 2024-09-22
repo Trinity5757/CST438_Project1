@@ -26,6 +26,17 @@ export const createUserTable = async (db: SQLiteDatabase): Promise<void> => {
   await db.execAsync(query);
 };
 
+export const createWordTable = async (db: SQLiteDatabase): Promise<void> => {
+  const query = `CREATE TABLE IF NOT EXISTS words (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    word TEXT NOT NULL,
+    definition TEXT,
+    username TEXT NOT NULL,
+    list TEXT NOT NULL
+  )`;
+  await db.execAsync(query);
+};
+
 export const createUser = async (db: SQLiteDatabase, users: User[]): Promise<void> => {
   const insertQuery = `INSERT OR REPLACE INTO users (username, password) values (?, ?)`;
   for (const user of users) {
@@ -37,6 +48,7 @@ export const getUser = async (db: SQLiteDatabase): Promise<User[]> => {
   const result = await db.getAllAsync<User>('SELECT * FROM users');
   return result;
 };
+
 // Function to create practice words
 export const createPracticeWord = async (db: SQLiteDatabase, words: Word[]): Promise<void> => {
   const insertQuery = `INSERT OR REPLACE INTO words (word, definition, username, list) values (?, ?, ?, 'practice')`;
