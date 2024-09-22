@@ -80,3 +80,29 @@ test("should generate a new word when random word button is clicked", async () =
     expect(queryByText(/Word:/)).toBeTruthy(); // Assuming "Word:" is part of the displayed text
   });
 });
+
+test('Displays the Login form when the Login Button is pressed', () => {
+  const { getByText, queryByPlaceholderText } = render(<HomeScreen />);
+
+  // Find the login button and ensure it's rendered
+  const loginButton = getByText('Login');
+  expect(loginButton).toBeTruthy();
+
+  // Simulate pressing the login button
+  fireEvent.press(loginButton);
+
+  // Check if the login form's username input appears
+  const usernameInput = queryByPlaceholderText('Username');
+  expect(usernameInput).toBeTruthy();
+});
+
+test('handles user input', () => {
+  const { getByPlaceholderText, getByText } = render(<index />);
+  fireEvent.press(getByText('Login'));
+  const usernameInput = getByPlaceholderText('Username');
+  fireEvent.changeText(usernameInput, 'testuser');
+
+  expect(usernameInput.props.value).toBe('TestUser');
+});
+
+
