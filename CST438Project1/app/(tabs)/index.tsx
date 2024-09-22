@@ -4,12 +4,15 @@ import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import WordApi, {WordApiRef} from '../wordsApi';
-import { openDatabase, createUserTable, createWordTable, getUser, createUser, createWord, User, Word, setupDatabaseChangeListener } from '../database/db-service';
-import { openDatabaseAsync, openDatabaseSync } from 'expo-sqlite';
+import { openDatabase, createUserTable, getUser, createUser, createPracticeWord, createFavoriteWord, getPracticeWords, getFavoriteWords, User, Word} from '../database/db-service';
 import { PracticeWordsProvider, usePracticeWords } from '../PracticeWordsContext';
+import { FavoriteWordsProvider, useFavoriteWords } from '../FavoriteWordsContext';
+
 
 export default function HomeScreen() {
   const { setPracticeWords } = usePracticeWords();
+  const { setFavoriteWords } = useFavoriteWords();
+
 
   const [signedIn, setSignedIn] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
@@ -22,7 +25,6 @@ export default function HomeScreen() {
     try {
       const db = await openDatabase('words.db');
       await createUserTable(db);
-      await createWordTable(db);
     } catch (error) {
     }
   };
@@ -76,17 +78,15 @@ export default function HomeScreen() {
         username: username,
         list: 'practice'
       };
-      await createWord(db, [newWord]);
+      await createPracticeWord(db, [newWord]);
       console.log("Word added to practice:", newWord);
 
-      // Fetch and log all practice words for the current user
-      const practiceWords = await db.getAllAsync<Word>('SELECT * FROM words WHERE username = ? AND list = ?', [username, 'practice']);
+      const practiceWords = await getPracticeWords(db, username);
       console.log("Practice words for user", username, ":");
       practiceWords.forEach((word, index) => {
         console.log(`${index + 1}. ${word.word}: ${word.definition}`);
       });
 
-      // Update the context with the new practice words
       setPracticeWords(practiceWords);
 
       handleNewWord();
@@ -131,24 +131,42 @@ export default function HomeScreen() {
     }
   };
   
-  const handleFavoriteWords = async () => {
-    if (!currentWord || !signedIn) return;
+  const handleFavoriteWords = useCallback(async () => {
+    console.log("handleFavoriteWords called. SignedIn:", signedIn, "CurrentWord:", currentWord);
+
+    const updatedCurrentWord = wordApiRef.current?.getCurrentWord();
+    if (!updatedCurrentWord) {
+      console.error("Still no current word after fetch attempt");
+      return;
+    }
+
     try {
-      const db = await openDatabaseSync('words.db');
+      const db = await openDatabase('words.db');
       const newWord: Word = {
-        word: currentWord.word,
-        definition: currentWord.definition,
+        word: updatedCurrentWord.word,
+        definition: updatedCurrentWord.definition,
         username: username,
         list: 'favorite'
       };
-      await createWord(db, [newWord]);
+      await createFavoriteWord(db, [newWord]);
+      console.log("Word added to favorite:", newWord);
+
+      const favoriteWords = await getFavoriteWords(db, username);
+      console.log("Favorite words for user", username, ":");
+      favoriteWords.forEach((word, index) => {
+        console.log(`${index + 1}. ${word.word}: ${word.definition}`);
+      });
+
+      setFavoriteWords(favoriteWords);
+
       handleNewWord();
     } catch (error) {
-      console.log("Can't add word to favorites", error);
+      console.error("Can't add word to favorite", error);
     }
-  };
+  }, [signedIn, currentWord, username, handleNewWord, setFavoriteWords]);
 
   return (
+    <FavoriteWordsProvider>
     <PracticeWordsProvider>
     <ParallaxScrollView
       headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
@@ -197,12 +215,13 @@ export default function HomeScreen() {
         />
         <Button 
           title="Add to Favorite" 
-          // onPress={handleFavoriteWords} 
+          onPress={handleFavoriteWords} 
         />
       </ThemedView>
       <Button title="Randomize" onPress={handleNewWord} />
     </ParallaxScrollView>
     </PracticeWordsProvider>
+    </FavoriteWordsProvider>
   );
 };
 

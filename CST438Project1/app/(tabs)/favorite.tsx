@@ -1,81 +1,53 @@
-import React, { useState } from 'react';
-import { Image, StyleSheet, Button, FlatList, View, Text } from 'react-native';
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+// FavoritePage.tsx
+import React from 'react';
+import { View, Text, StyleSheet, FlatList } from 'react-native';
+import { useFavoriteWords } from '../FavoriteWordsContext';
 
-// Define the type for practiceWords
-interface PracticeWord {
-  id: string;
-  word: string;
-}
-
-export default function HomeScreen() {
-  // State holding an array of practice words
-  const [practiceWords, setPracticeWords] = useState<PracticeWord[]>([
-    { id: '1', word: 'React' },
-    { id: '2', word: 'JavaScript' },
-    { id: '3', word: 'Native' },
-    { id: '4', word: 'Components' },
-    { id: '5', word: 'Props' },
-  ]);
-
-  // Function to render each word in the list
-  const renderWord = ({ item }: { item: PracticeWord }) => (
-    <View style={styles.wordContainer}>
-      <Text style={styles.wordText}>{item.word}</Text>
-    </View>
-  );
+const FavoritePage = () => {
+  const { favoriteWords } = useFavoriteWords();
 
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Your Favorite Words</ThemedText>
-      </ThemedView>
-
-      {/* FlatList to display the practice words */}
+    <View style={styles.container}>
+      <Text style={styles.header}>Favorite Page</Text>
       <FlatList
-        data={practiceWords}
-        renderItem={renderWord}
-        keyExtractor={(item) => item.id}
-        style={styles.list}
+        data={favoriteWords}
+        keyExtractor={(item) => item.word}
+        renderItem={({ item }) => (
+          <View style={styles.wordContainer}>
+            <Text style={styles.word}>{item.word}</Text>
+            <Text style={styles.definition}>{item.definition}</Text>
+          </View>
+        )}
       />
-    </ParallaxScrollView>
+    </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
-  },
-  list: {
+  container: {
+    flex: 1,
     padding: 16,
+    backgroundColor: '#fff',
+  },
+  header: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 16,
   },
   wordContainer: {
-    padding: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
+    marginBottom: 12,
+    padding: 8,
+    backgroundColor: '#f9f9f9',
+    borderRadius: 4,
   },
-  wordText: {
+  word: {
     fontSize: 18,
+    fontWeight: 'bold',
+  },
+  definition: {
+    fontSize: 16,
+    color: '#555',
   },
 });
 
-
+export default FavoritePage;
