@@ -1,5 +1,5 @@
 import React, { createContext, useState, useContext, ReactNode } from 'react';
-import { Word } from './/database/db-service';
+import { Word } from './database/db-service';
 
 interface FavoriteWordsContextProps {
   favoriteWords: Word[];

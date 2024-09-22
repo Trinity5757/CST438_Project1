@@ -17,22 +17,6 @@ export const openDatabase = async (databaseName: string): Promise<SQLiteDatabase
   return await SQLite.openDatabaseAsync(databaseName,{});
 };
 
-export const deleteDatabase = async (databaseName: string): Promise<void> => {
-  await SQLite.deleteDatabaseAsync(databaseName);
-};
-
-export const serializeDatabase = async (db: SQLiteDatabase): Promise<Uint8Array> => {
-  return await db.serializeAsync();
-};
-
-export const deserializeDatabase = async (serializedData: Uint8Array): Promise<SQLiteDatabase> => {
-  return await SQLite.deserializeDatabaseAsync(serializedData);
-};
-
-export const addDatabaseChangeListener = (listener: (event: SQLite.DatabaseChangeEvent) => void) => {
-  return SQLite.addDatabaseChangeListener(listener);
-};
-
 export const createUserTable = async (db: SQLiteDatabase): Promise<void> => {
   const query = `CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
