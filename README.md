@@ -103,21 +103,22 @@
 <h3>Colton Korhummel</h3>
 <p><strong>Pull Requests:</strong></p>
 <ul>
-  <li>(links to Colton’s PRs)</li>
+  <li><a href="https://github.com/KobiMurakami/CST438-Project-01/pulls?q=is%3Apr+is%3Aclosed+author%3AColtonKor">PRs from Iterations 1 & 2</a></li>
+  <li><a href="https://github.com/Trinity5757/CST438_Project1/pulls?q=is%3Apr+is%3Aclosed+author%3AColtonKor">PRs from Iterations 3</a></li>
 </ul>
 
 <p><strong>Issues:</strong></p>
 <ul>
-  <li>(links to Colton’s issues)</li>
+  <li><a href="https://github.com/KobiMurakami/CST438-Project-01/issues/assigned/ColtonKor">Issues Assigned</a></li>
 </ul>
 
-<p><strong>Role/Stories</strong>: (details about stories)</p>
-<p><strong>Biggest Challenge</strong>: (challenge explanation)</p>
-<p><strong>Why was it a challenge?</strong>: (why explanation)</p>
-<p><strong>How was the challenge addressed?</strong>: (solution)</p>
-<p><strong>Favorite/Most Interesting Part</strong>: (highlights)</p>
-<p><strong>What would you change?</strong>: (improvement ideas)</p>
-<p><strong>Most Valuable Thing Learned</strong>: (personal learning)</p>
+<p><strong>Role/Stories</strong>: I worked on the favorites and practice page. I integrated the working API, that Trinity made, into the page so the words were there. I also helped try to set up the database</p>
+<p><strong>Biggest Challenge</strong>: The strongest challenge was getting the database to work. We all tried and every time we would get the same null error. Sal got it to work.</p>
+<p><strong>Why was it a challenge?</strong>: It was a challenge for me because everything I looked up would be different from the previous and they would all still not work.</p>
+<p><strong>How was the challenge addressed?</strong>: The challenge was fixed by Sal. He ended up doing the database with 'expo-sqlite' while I was trying something else</p>
+<p><strong>Favorite/Most Interesting Part</strong>: My favorite part of this project was trying to seeing how react native worked on my own.</p>
+<p><strong>What would you change?</strong>: The one thing I would change would be to try and make the app look more like an app.</p>
+<p><strong>Most Valuable Thing Learned</strong>: The most valuable thing I learned from this project is integrating API's because I will need to that in other classes.</p>
 
 <hr>
 
