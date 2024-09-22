@@ -4,11 +4,14 @@ import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import React from 'react';
 import { PracticeWordsProvider } from '../PracticeWordsContext';
+import { FavoriteWordsProvider } from '../FavoriteWordsContext';
+
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
 
   return (
+    <FavoriteWordsProvider>
     <PracticeWordsProvider>
     <Tabs
       screenOptions={{
@@ -44,5 +47,6 @@ export default function TabLayout() {
       />
     </Tabs>
     </PracticeWordsProvider>
+    </FavoriteWordsProvider>
   );
 }

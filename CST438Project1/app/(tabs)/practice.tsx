@@ -1,4 +1,3 @@
-// PracticePage.tsx
 import React from 'react';
 import { View, Text, StyleSheet, FlatList } from 'react-native';
 import { usePracticeWords } from '../PracticeWordsContext';
