@@ -4,7 +4,7 @@ import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import WordApi, {WordApiRef} from '../wordsApi';
-import { openDatabase, createUserTable, getUser, createUser, createPracticeWord, createFavoriteWord, getPracticeWords, getFavoriteWords, User, Word} from '../database/db-service';
+import { openDatabase, createUserTable, createWordTable, getUser, createUser, createPracticeWord, createFavoriteWord, getPracticeWords, getFavoriteWords, User, Word} from '../database/db-service';
 import { PracticeWordsProvider, usePracticeWords } from '../PracticeWordsContext';
 import { FavoriteWordsProvider, useFavoriteWords } from '../FavoriteWordsContext';
 
@@ -24,8 +24,14 @@ export default function HomeScreen() {
   const setupDatabase = async () => {
     try {
       const db = await openDatabase('words.db');
+      console.log("Setting up user table");
       await createUserTable(db);
+      console.log("Successfully set up user table");
+      console.log("Setting up word table");
+      await createWordTable(db);
+      console.log("Successfully set up word table");
     } catch (error) {
+        console.log("Could not set up tables");
     }
   };
 
