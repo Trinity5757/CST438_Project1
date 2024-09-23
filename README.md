@@ -61,21 +61,23 @@
 <h3>Salvatore Eze</h3>
 <p><strong>Pull Requests:</strong></p>
 <ul>
-  <li>(links to Salvatore’s PRs)</li>
+  <li>Past <a href="https://github.com/KobiMurakami/CST438-Project-01/pulls?q=is%3Apr+is%3Aclosed+author%3Aezesalvatore">link</a></li>
+  <li>Current <a href="https://github.com/Trinity5757/CST438_Project1/pulls?q=is%3Apr+author%3A%40me+is%3Aclosed">link</a></li>
 </ul>
 
 <p><strong>Issues:</strong></p>
 <ul>
-  <li>(links to Salvatore’s issues)</li>
+  <li>Past github <a href="https://github.com/Trinity5757/CST438_Project1/issues/6">link</a></li>
+  <li>Current project <a href="https://github.com/KobiMurakami/CST438-Project-01/issues/assigned/ezesalvatore">link</a></li>
 </ul>
 
-<p><strong>Role/Stories</strong>: (details about stories)</p>
-<p><strong>Biggest Challenge</strong>: (challenge explanation)</p>
-<p><strong>Why was it a challenge?</strong>: (why explanation)</p>
-<p><strong>How was the challenge addressed?</strong>: (solution)</p>
-<p><strong>Favorite/Most Interesting Part</strong>: (highlights)</p>
-<p><strong>What would you change?</strong>: (improvement ideas)</p>
-<p><strong>Most Valuable Thing Learned</strong>: (personal learning)</p>
+<p><strong>Role/Stories</strong>: Created the database, help complete favorite and words page utilizing the recycler viewer, revamped wordsApi so it can integrate the database</p>
+<p><strong>Biggest Challenge</strong>: Displaying the words on both the Favorite and Words Page </p>
+<p><strong>Why was it a challenge?</strong>: It was hard to get the words from the web API and put them into the user database and display them on the pages.</p>
+<p><strong>How was the challenge addressed?</strong>: My solution was to convert the wordsApi.js into a .tsx file. The keyword 'export interface' helped index.tsx know what methods are available and what they return. When receiving the words, I utilized the global import to get an array from the database and display it on the pages.</p>
+<p><strong>Favorite/Most Interesting Part</strong>: Learning about React Native and more about JavaScript. React Native is a better tool to create phone applications compared to Android Studio.</p>
+<p><strong>What would you change?</strong>: Add more features to the app, there was many ideas scrapped since we had to redo the project</p>
+<p><strong>Most Valuable Thing Learned</strong>: Working with a programming group. So far in my academic career in the CSUMB CST program, I hadn't done any group work until my senior year.</p>
 
 <hr>
 
@@ -132,3 +134,5 @@
 
 <h3>Final Assessment</h3>
 <p>This project posed more challenges than expected. The first week was spent aligning communication and navigating React Native as a new language for the team. Our initial approach of starting in Android Studio and integrating with the web API and database was incorrect, leading to a full restart by the third iteration. By the end of the third iteration, we had a much clearer understanding of both communication and workflow, which made the final steps smoother.</p>
+
+<h3><a href="https://youtu.be/bRCl3O-Vg5M">YouTube</a></h3>
