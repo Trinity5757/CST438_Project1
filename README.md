@@ -84,21 +84,23 @@
 <h3>Kobi Murakami</h3>
 <p><strong>Pull Requests:</strong></p>
 <ul>
-  <li>(links to Kobi’s PRs)</li>
+  <li><a href="https://github.com/KobiMurakami/CST438-Project-01/pulls?q=is%3Apr+is%3Aclosed+author%3AKobiMurakami">Pull requests (Iterations 1 & 2)</li>
+  <li><a href="https://github.com/Trinity5757/CST438_Project1/pulls?q=is%3Apr+is%3Aclosed+author%3AKobiMurakami">Pull requests (Iterations 3)</li>
 </ul>
 
 <p><strong>Issues:</strong></p>
 <ul>
-  <li>(links to Kobi’s issues)</li>
+    <li><a href="https://github.com/KobiMurakami/CST438-Project-01/issues?q=assignee%3A%40me+author%3AKobiMurakami+is%3Aopen">Issues Assigned (Iterations 1 & 2)</li>
+    <li><a href="https://github.com/Trinity5757/CST438_Project1/issues?q=assignee%3A%40me+is%3Aclosed">Issues Assigned (Iterations 3)</li>
 </ul>
 
-<p><strong>Role/Stories</strong>: (details about stories)</p>
-<p><strong>Biggest Challenge</strong>: (challenge explanation)</p>
-<p><strong>Why was it a challenge?</strong>: (why explanation)</p>
-<p><strong>How was the challenge addressed?</strong>: (solution)</p>
-<p><strong>Favorite/Most Interesting Part</strong>: (highlights)</p>
-<p><strong>What would you change?</strong>: (improvement ideas)</p>
-<p><strong>Most Valuable Thing Learned</strong>: (personal learning)</p>
+<p><strong>Role/Stories</strong>: I worked on the database</p>
+<p><strong>Biggest Challenge</strong>: The biggest challenge for me was trying to get the database running with React Native.</p>
+<p><strong>Why was it a challenge?</strong>: I spent a lot of time trying and failing, but ultimately Salvatore helped me finish it and we were able to make everything work by working together</p>
+<p><strong>How was the challenge addressed?</strong>: I spent a lot of time trying and failing, but ultimately Salvatore helped me finish it and we were able to make everything work by working together</p>
+<p><strong>Favorite/Most Interesting Part</strong>: My favorite part was getting the API functionality to work and seeing the words pop up.</p>
+<p><strong>What would you change?</strong>: I would’ve started in react native from the start and not had to restart</p>
+<p><strong>Most Valuable Thing Learned</strong>: How to use a lot of github features as well as cobble something together in a short amount of time.</p>
 
 <hr>
 
